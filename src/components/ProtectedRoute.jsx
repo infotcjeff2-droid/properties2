@@ -2,55 +2,29 @@ import { Navigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { useEffect, useState } from 'react'
 
+// Get user from localStorage synchronously
+function getLocalUser() {
+  try {
+    const savedUser = localStorage.getItem('user')
+    if (savedUser) {
+      return JSON.parse(savedUser)
+    }
+  } catch (e) {
+    console.error('Error loading user from localStorage:', e)
+  }
+  return null
+}
+
 function ProtectedRoute({ children, requiredRole }) {
   const { user, loading } = useAuth()
-  const [isChecking, setIsChecking] = useState(true)
-  const [localUser, setLocalUser] = useState(null)
-
-  // Always check localStorage SYNCHRONOUSLY first to prevent logout on reload
-  useEffect(() => {
-    // Check immediately and synchronously
-    try {
-      const savedUser = localStorage.getItem('user')
-      if (savedUser) {
-        const parsedUser = JSON.parse(savedUser)
-        setLocalUser(parsedUser)
-      } else {
-        setLocalUser(null)
-      }
-    } catch (e) {
-      console.error('Error checking auth:', e)
-      setLocalUser(null)
-    } finally {
-      setIsChecking(false)
-    }
-    
-    // Also check on focus to catch any changes
-    const handleFocus = () => {
-      try {
-        const savedUser = localStorage.getItem('user')
-        if (savedUser) {
-          const parsedUser = JSON.parse(savedUser)
-          setLocalUser(parsedUser)
-        } else {
-          setLocalUser(null)
-        }
-      } catch (e) {
-        console.error('Error checking auth on focus:', e)
-      }
-    }
-    window.addEventListener('focus', handleFocus)
-    
-    return () => {
-      window.removeEventListener('focus', handleFocus)
-    }
-  }, [])
+  // Initialize with localStorage user immediately
+  const [localUser] = useState(() => getLocalUser())
 
   // Use localUser from localStorage if user from context is not available (e.g., on reload)
   const currentUser = user || localUser
 
-  // Show loading only if we're still checking and don't have a user yet
-  if ((loading || isChecking) && !currentUser) {
+  // Show loading only if we're loading and don't have a user yet
+  if (loading && !currentUser) {
     return (
       <div style={{ 
         minHeight: '100vh', 

@@ -2,26 +2,39 @@ import { createContext, useContext, useState, useEffect } from 'react'
 
 const AuthContext = createContext()
 
+// Load user from localStorage SYNCHRONOUSLY before component initialization
+function getInitialUser() {
+  try {
+    const savedUser = localStorage.getItem('user')
+    if (savedUser) {
+      return JSON.parse(savedUser)
+    }
+  } catch (e) {
+    console.error('Error loading user from localStorage:', e)
+  }
+  return null
+}
+
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null)
-  const [loading, setLoading] = useState(true)
+  // Initialize user state directly from localStorage to prevent logout on reload
+  const [user, setUser] = useState(() => getInitialUser())
+  const [loading, setLoading] = useState(false) // Start as false since we load synchronously
 
   useEffect(() => {
-    // Load user from localStorage SYNCHRONOUSLY on mount to prevent logout on reload
-    // This must happen before any render to prevent blank pages
-    try {
-      const savedUser = localStorage.getItem('user')
-      if (savedUser) {
+    // Double-check and sync with localStorage on mount
+    const savedUser = localStorage.getItem('user')
+    if (savedUser) {
+      try {
         const parsedUser = JSON.parse(savedUser)
-        setUser(parsedUser)
-      } else {
-        setUser(null)
+        if (JSON.stringify(parsedUser) !== JSON.stringify(user)) {
+          setUser(parsedUser)
+        }
+      } catch (e) {
+        console.error('Error syncing user from localStorage:', e)
       }
-    } catch (e) {
-      console.error('Error loading user from localStorage:', e)
-      setUser(null)
-    } finally {
-      setLoading(false)
+    } else if (user) {
+      // If localStorage was cleared but we have user state, restore it
+      localStorage.setItem('user', JSON.stringify(user))
     }
     
     // Also listen for storage changes (e.g., from other tabs)
@@ -61,14 +74,8 @@ export function AuthProvider({ children }) {
             setUser(parsedUser)
           }
         } else if (user) {
-          // localStorage was cleared, but don't clear user immediately
-          // Wait a bit in case it's just a timing issue
-          setTimeout(() => {
-            const checkAgain = localStorage.getItem('user')
-            if (!checkAgain) {
-              setUser(null)
-            }
-          }, 100)
+          // If we have user state but localStorage doesn't, restore it
+          localStorage.setItem('user', JSON.stringify(user))
         }
       } catch (e) {
         console.error('Error syncing user from localStorage:', e)
@@ -81,8 +88,8 @@ export function AuthProvider({ children }) {
     // Check on window focus
     window.addEventListener('focus', syncUser)
     
-    // Also check periodically (but not too often)
-    const interval = setInterval(syncUser, 500)
+    // Also check periodically to catch any external changes
+    const interval = setInterval(syncUser, 1000)
     
     return () => {
       window.removeEventListener('focus', syncUser)
