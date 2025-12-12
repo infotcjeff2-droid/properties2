@@ -19,11 +19,7 @@ function Login() {
     const result = login(email, password)
     
     if (result.success) {
-      if (result.user?.role === 'staff') {
-        navigate('/order', { state: { directAccess: true } })
-      } else {
-        navigate(result.user?.role === 'admin' ? '/admin' : '/order')
-      }
+      navigate('/order', { state: { directAccess: result.user?.role === 'staff' } })
     } else {
       setError(result.error)
     }

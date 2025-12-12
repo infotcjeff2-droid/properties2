@@ -29,12 +29,14 @@ function AdminContent() {
       setNewUserPassword('')
       setNewUserName('')
       alert('用戶新增成功！')
+      window.location.reload()
     }
   }
 
   const handleDeleteUser = (userId) => {
     if (window.confirm('確定要刪除此用戶嗎？')) {
       deleteUser(userId)
+      window.location.reload()
     }
   }
 
@@ -42,6 +44,7 @@ function AdminContent() {
     if (newOrderType) {
       addOrderType(newOrderType)
       setNewOrderType('')
+      window.location.reload()
     }
   }
 
@@ -49,6 +52,7 @@ function AdminContent() {
     if (newCompany) {
       addCompany(newCompany)
       setNewCompany('')
+      window.location.reload()
     }
   }
 
@@ -229,15 +233,26 @@ function AdminContent() {
                         type="text"
                         value={company}
                         onChange={(e) => updateCompany(index, e.target.value)}
-                        onBlur={() => setEditingCompany(null)}
-                        onKeyPress={(e) => e.key === 'Enter' && setEditingCompany(null)}
+                        onBlur={() => {
+                          setEditingCompany(null)
+                          window.location.reload()
+                        }}
+                        onKeyPress={(e) => {
+                          if (e.key === 'Enter') {
+                            setEditingCompany(null)
+                            window.location.reload()
+                          }
+                        }}
                         autoFocus
                       />
                     ) : (
                       <>
                         <span onClick={() => setEditingCompany(index)}>{company}</span>
                         <button
-                          onClick={() => deleteCompany(index)}
+                          onClick={() => {
+                            deleteCompany(index)
+                            window.location.reload()
+                          }}
                           className="delete-button"
                         >
                           刪除
