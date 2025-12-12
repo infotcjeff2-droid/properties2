@@ -202,7 +202,10 @@ function AdminContent() {
                       <>
                         <span onClick={() => setEditingOrderType(index)}>{type}</span>
                         <button
-                          onClick={() => deleteOrderType(index)}
+                          onClick={() => {
+                            deleteOrderType(index)
+                            window.location.reload()
+                          }}
                           className="delete-button"
                         >
                           刪除
