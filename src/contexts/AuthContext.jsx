@@ -7,13 +7,52 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Load user from localStorage on mount
-    const savedUser = localStorage.getItem('user')
-    if (savedUser) {
-      setUser(JSON.parse(savedUser))
+    // Load user from localStorage on mount and on every render to prevent logout on reload
+    const loadUser = () => {
+      try {
+        const savedUser = localStorage.getItem('user')
+        if (savedUser) {
+          const parsedUser = JSON.parse(savedUser)
+          setUser(parsedUser)
+        } else {
+          setUser(null)
+        }
+      } catch (e) {
+        console.error('Error loading user from localStorage:', e)
+        setUser(null)
+      } finally {
+        setLoading(false)
+      }
     }
-    setLoading(false)
+    
+    loadUser()
+    
+    // Also listen for storage changes (e.g., from other tabs)
+    const handleStorageChange = (e) => {
+      if (e.key === 'user') {
+        loadUser()
+      }
+    }
+    
+    window.addEventListener('storage', handleStorageChange)
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange)
+    }
   }, [])
+  
+  // Sync user state with localStorage on every render to prevent logout on reload
+  useEffect(() => {
+    const savedUser = localStorage.getItem('user')
+    if (savedUser && !user) {
+      try {
+        const parsedUser = JSON.parse(savedUser)
+        setUser(parsedUser)
+      } catch (e) {
+        console.error('Error syncing user from localStorage:', e)
+      }
+    }
+  }, [user])
 
   const login = (email, password) => {
     // Load users from localStorage

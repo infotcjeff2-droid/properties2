@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
 import { AuthProvider, useAuth } from './contexts/AuthContext'
 import Login from './pages/Login'
@@ -8,20 +8,21 @@ import ProtectedRoute from './components/ProtectedRoute'
 
 function AppRoutes() {
   const { user } = useAuth()
+  const navigate = useNavigate()
+  const location = useLocation()
 
-  // Handle GitHub Pages 404 redirect
+  // Handle GitHub Pages 404 redirect without page reload
   useEffect(() => {
     const search = window.location.search
     if (search.includes('?/')) {
       const pathname = search.split('?/')[1].split('&')[0].replace(/~and~/g, '&')
-      const newPath = '/ZXS-order-form/' + pathname
-      window.history.replaceState({}, '', newPath + window.location.hash)
-      // Use navigate instead of reload to preserve auth state
-      if (pathname) {
-        window.location.href = newPath + window.location.hash
+      const newPath = pathname
+      // Use React Router navigate instead of window.location to avoid reload
+      if (pathname && location.pathname !== newPath) {
+        navigate(newPath + window.location.hash, { replace: true })
       }
     }
-  }, [])
+  }, [navigate, location])
 
   return (
     <Routes>
