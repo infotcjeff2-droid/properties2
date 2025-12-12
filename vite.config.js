@@ -13,6 +13,16 @@ export default defineConfig({
           join(__dirname, 'public', '404.html'),
           join(__dirname, 'dist', '404.html')
         )
+        // Copy favicon to dist
+        const { existsSync, mkdirSync } = require('fs')
+        const imgDir = join(__dirname, 'dist', 'img')
+        if (!existsSync(imgDir)) {
+          mkdirSync(imgDir, { recursive: true })
+        }
+        copyFileSync(
+          join(__dirname, 'src', 'img', 'ZXS website logo.png'),
+          join(imgDir, 'ZXS website logo.png')
+        )
       }
     }
   ],
