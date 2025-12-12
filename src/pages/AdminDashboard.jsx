@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useAuth } from '../contexts/AuthContext'
@@ -22,7 +22,12 @@ function AdminContent() {
   // Load users on mount and when needed
   useEffect(() => {
     setUsersList(getUsers())
-  }, [getUsers])
+  }, [])
+  
+  // Update users list when needed
+  const refreshUsersList = () => {
+    setUsersList(getUsers())
+  }
 
   const handleAddUser = () => {
     if (newUserEmail && newUserPassword && newUserName) {
@@ -35,14 +40,14 @@ function AdminContent() {
       setNewUserPassword('')
       setNewUserName('')
       alert('用戶新增成功！')
-      setUsersList(getUsers())
+      refreshUsersList()
     }
   }
 
   const handleDeleteUser = (userId) => {
     if (window.confirm('確定要刪除此用戶嗎？')) {
       deleteUser(userId)
-      setUsersList(getUsers())
+      refreshUsersList()
     }
   }
 
@@ -133,8 +138,8 @@ function AdminContent() {
             </div>
 
             <h2>用戶列表</h2>
-            <div className="users-list" key={refreshKey}>
-              {getUsers().map((u) => (
+            <div className="users-list">
+              {usersList.map((u) => (
                 <motion.div
                   key={u.id}
                   className="user-item"
