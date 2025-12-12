@@ -35,7 +35,7 @@ function AppRoutes() {
 function App() {
   return (
     <AuthProvider>
-      <Router>
+      <Router basename="/ZXS-order-form">
         <AppRoutes />
       </Router>
     </AuthProvider>
