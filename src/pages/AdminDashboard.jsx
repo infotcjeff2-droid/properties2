@@ -17,7 +17,12 @@ function AdminContent() {
   const [newCompany, setNewCompany] = useState('')
   const [editingOrderType, setEditingOrderType] = useState(null)
   const [editingCompany, setEditingCompany] = useState(null)
-  const [refreshKey, setRefreshKey] = useState(0)
+  const [usersList, setUsersList] = useState([])
+  
+  // Load users on mount and when needed
+  useEffect(() => {
+    setUsersList(getUsers())
+  }, [getUsers])
 
   const handleAddUser = () => {
     if (newUserEmail && newUserPassword && newUserName) {
@@ -30,14 +35,14 @@ function AdminContent() {
       setNewUserPassword('')
       setNewUserName('')
       alert('用戶新增成功！')
-      setRefreshKey(prev => prev + 1)
+      setUsersList(getUsers())
     }
   }
 
   const handleDeleteUser = (userId) => {
     if (window.confirm('確定要刪除此用戶嗎？')) {
       deleteUser(userId)
-      setRefreshKey(prev => prev + 1)
+      setUsersList(getUsers())
     }
   }
 
@@ -45,7 +50,6 @@ function AdminContent() {
     if (newOrderType) {
       addOrderType(newOrderType)
       setNewOrderType('')
-      setRefreshKey(prev => prev + 1)
     }
   }
 
@@ -53,7 +57,6 @@ function AdminContent() {
     if (newCompany) {
       addCompany(newCompany)
       setNewCompany('')
-      setRefreshKey(prev => prev + 1)
     }
   }
 
@@ -189,12 +192,10 @@ function AdminContent() {
                         onChange={(e) => updateOrderType(index, e.target.value)}
                         onBlur={() => {
                           setEditingOrderType(null)
-                          setRefreshKey(prev => prev + 1)
                         }}
                         onKeyPress={(e) => {
                           if (e.key === 'Enter') {
                             setEditingOrderType(null)
-                            setRefreshKey(prev => prev + 1)
                           }
                         }}
                         autoFocus
@@ -205,7 +206,6 @@ function AdminContent() {
                         <button
                           onClick={() => {
                             deleteOrderType(index)
-                            setRefreshKey(prev => prev + 1)
                           }}
                           className="delete-button"
                         >
@@ -231,7 +231,7 @@ function AdminContent() {
                   新增
                 </button>
               </div>
-              <div className="field-list" key={`companies-${refreshKey}`}>
+              <div className="field-list">
                 {companies.map((company, index) => (
                   <motion.div
                     key={index}
@@ -247,12 +247,10 @@ function AdminContent() {
                         onChange={(e) => updateCompany(index, e.target.value)}
                         onBlur={() => {
                           setEditingCompany(null)
-                          setRefreshKey(prev => prev + 1)
                         }}
                         onKeyPress={(e) => {
                           if (e.key === 'Enter') {
                             setEditingCompany(null)
-                            setRefreshKey(prev => prev + 1)
                           }
                         }}
                         autoFocus
@@ -263,7 +261,6 @@ function AdminContent() {
                         <button
                           onClick={() => {
                             deleteCompany(index)
-                            setRefreshKey(prev => prev + 1)
                           }}
                           className="delete-button"
                         >
