@@ -25,6 +25,19 @@ function AppRoutes() {
         // Just clean up the query string
         window.history.replaceState({}, '', window.location.pathname + window.location.hash)
       }
+      
+      // Hide any loading overlay that might be showing
+      setTimeout(() => {
+        const loading = document.getElementById('redirect-loading')
+        if (loading) {
+          loading.classList.add('hidden')
+          setTimeout(() => {
+            if (loading && loading.parentNode) {
+              loading.parentNode.removeChild(loading)
+            }
+          }, 300)
+        }
+      }, 300)
     }
   }, [navigate, location])
 
