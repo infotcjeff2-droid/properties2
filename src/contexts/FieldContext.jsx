@@ -8,25 +8,52 @@ export function FieldProvider({ children }) {
 
   useEffect(() => {
     // Load from localStorage
-    const savedOrderTypes = localStorage.getItem('orderTypes')
-    const savedCompanies = localStorage.getItem('companies')
-    
-    if (savedOrderTypes) {
-      setOrderTypes(JSON.parse(savedOrderTypes))
-    } else {
-      // Default values
-      const defaults = ['標準訂單', '急件訂單', '批量訂單', '客製化訂單']
-      setOrderTypes(defaults)
-      localStorage.setItem('orderTypes', JSON.stringify(defaults))
+    const loadFields = () => {
+      try {
+        const savedOrderTypes = localStorage.getItem('orderTypes')
+        const savedCompanies = localStorage.getItem('companies')
+        
+        if (savedOrderTypes) {
+          const parsed = JSON.parse(savedOrderTypes)
+          setOrderTypes(Array.isArray(parsed) ? parsed : [])
+        } else {
+          // Default values
+          const defaults = ['標準訂單', '急件訂單', '批量訂單', '客製化訂單']
+          setOrderTypes(defaults)
+          localStorage.setItem('orderTypes', JSON.stringify(defaults))
+        }
+        
+        if (savedCompanies) {
+          const parsed = JSON.parse(savedCompanies)
+          setCompanies(Array.isArray(parsed) ? parsed : [])
+        } else {
+          // Default values
+          const defaults = ['中信方案有限公司', '合作夥伴A', '合作夥伴B']
+          setCompanies(defaults)
+          localStorage.setItem('companies', JSON.stringify(defaults))
+        }
+      } catch (e) {
+        console.error('Error loading fields from localStorage:', e)
+        // Set defaults on error
+        const orderDefaults = ['標準訂單', '急件訂單', '批量訂單', '客製化訂單']
+        const companyDefaults = ['中信方案有限公司', '合作夥伴A', '合作夥伴B']
+        setOrderTypes(orderDefaults)
+        setCompanies(companyDefaults)
+        localStorage.setItem('orderTypes', JSON.stringify(orderDefaults))
+        localStorage.setItem('companies', JSON.stringify(companyDefaults))
+      }
     }
     
-    if (savedCompanies) {
-      setCompanies(JSON.parse(savedCompanies))
-    } else {
-      // Default values
-      const defaults = ['中信方案有限公司', '合作夥伴A', '合作夥伴B']
-      setCompanies(defaults)
-      localStorage.setItem('companies', JSON.stringify(defaults))
+    loadFields()
+    
+    // Reload on focus to catch any external changes
+    const handleFocus = () => {
+      loadFields()
+    }
+    window.addEventListener('focus', handleFocus)
+    
+    return () => {
+      window.removeEventListener('focus', handleFocus)
     }
   }, [])
 

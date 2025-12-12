@@ -28,6 +28,16 @@ function ProtectedRoute({ children, requiredRole }) {
     
     // Check immediately - don't wait
     checkAuth()
+    
+    // Also check on focus to catch any changes
+    const handleFocus = () => {
+      checkAuth()
+    }
+    window.addEventListener('focus', handleFocus)
+    
+    return () => {
+      window.removeEventListener('focus', handleFocus)
+    }
   }, [])
 
   if (loading || isChecking) {
