@@ -1,11 +1,15 @@
 # 訂單表單系統 - 中信方案有限公司
 
+## 🌐 線上訪問
+
+訪問地址：https://infotcjeff-ui.github.io/ZXS-order-form/
+
 ## 功能特色
 
 - 🔐 用戶登入系統（管理員/會員角色）
 - 👨‍💼 管理員後台（用戶管理、選項管理）
 - 📝 訂單表單生成
-- 📥 多格式下載（PDF、Word、JPG）
+- 🖨️ 列印功能（A4格式）
 - 🎨 現代化動畫效果
 - 📱 響應式設計
 
@@ -27,7 +31,21 @@ npm run dev
 - React Router
 - Vite
 - Framer Motion
-- jsPDF
-- html2canvas
-- docx
+
+## 部署
+
+項目使用 GitHub Actions 自動部署到 GitHub Pages。每次推送到 main 分支時會自動構建和部署。
+
+## 本地開發
+
+```bash
+# 安裝依賴
+npm install
+
+# 啟動開發服務器
+npm run dev
+
+# 構建生產版本
+npm run build
+```
 
