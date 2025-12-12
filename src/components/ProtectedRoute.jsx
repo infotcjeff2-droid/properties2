@@ -40,24 +40,27 @@ function ProtectedRoute({ children, requiredRole }) {
     }
   }, [])
 
-  if (loading || isChecking) {
-    return (
-      <div style={{ 
-        minHeight: '100vh', 
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'center',
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        color: 'white',
-        fontSize: '18px'
-      }}>
-        載入中...
-      </div>
-    )
-  }
-
   // Use localUser from localStorage if user from context is not available (e.g., on reload)
   const currentUser = user || localUser
+
+  if (loading || isChecking) {
+    // Show loading only if we don't have a user yet
+    if (!currentUser) {
+      return (
+        <div style={{ 
+          minHeight: '100vh', 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'center',
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          color: 'white',
+          fontSize: '18px'
+        }}>
+          載入中...
+        </div>
+      )
+    }
+  }
 
   if (!currentUser) {
     return <Navigate to="/login" replace />

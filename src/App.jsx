@@ -18,29 +18,24 @@ function AppRoutes() {
     
     const search = window.location.search
     if (search.includes('?/')) {
-      // Prevent infinite loop
-      if (sessionStorage.getItem('redirected')) {
-        // Clear the flag and clean up URL
-        sessionStorage.removeItem('redirected')
-        const pathname = search.split('?/')[1].split('&')[0].replace(/~and~/g, '&')
-        const newPath = pathname
-        if (pathname && location.pathname !== newPath) {
-          navigate(newPath + window.location.hash, { replace: true })
-        }
-        // Clean up URL by removing the ?/ part
-        window.history.replaceState({}, '', window.location.pathname + window.location.hash)
-        return
-      }
-      
       const pathname = search.split('?/')[1].split('&')[0].replace(/~and~/g, '&')
       const newPath = pathname
+      const redirectKey = 'redirected_' + search
+      
+      // Clean up sessionStorage flags
+      Object.keys(sessionStorage).forEach(key => {
+        if (key.startsWith('redirected_')) {
+          sessionStorage.removeItem(key)
+        }
+      })
+      
       // Use React Router navigate instead of window.location to avoid reload
       if (pathname && location.pathname !== newPath) {
-        // Mark as redirected
-        sessionStorage.setItem('redirected', 'true')
-        // Clear the query string after navigation
         navigate(newPath + window.location.hash, { replace: true })
-        // Clean up URL by removing the ?/ part
+      }
+      
+      // Clean up URL by removing the ?/ part
+      if (search.includes('?/')) {
         window.history.replaceState({}, '', window.location.pathname + window.location.hash)
       }
     }

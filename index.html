@@ -9,23 +9,32 @@
       // Single Page Apps for GitHub Pages
       // Handle 404 redirect before React loads - only once
       (function() {
-        // Prevent infinite loop - check if we've already redirected
-        if (sessionStorage.getItem('redirected')) {
-          return;
-        }
-        
         var l = window.location;
+        var search = l.search;
         
         // Only redirect if we're on a 404 page (has ?/ in search)
-        if (l.search.includes('?/')) {
-          var pathname = l.search.split('?/')[1].split('&')[0].replace(/~and~/g, '&');
+        if (search.includes('?/')) {
+          // Check if we've already processed this redirect
+          var redirectKey = 'redirected_' + search;
+          if (sessionStorage.getItem(redirectKey)) {
+            // Already processed, clear the flag and let React handle it
+            sessionStorage.removeItem(redirectKey);
+            return;
+          }
+          
+          var pathname = search.split('?/')[1].split('&')[0].replace(/~and~/g, '&');
           var newPath = '/ZXS-order-form/' + pathname;
           
           // Mark as redirected to prevent loop
-          sessionStorage.setItem('redirected', 'true');
+          sessionStorage.setItem(redirectKey, 'true');
           
-          // Redirect
-          l.replace(newPath + l.hash);
+          // Redirect without reload to preserve state
+          if (l.pathname !== newPath) {
+            l.replace(newPath + l.hash);
+          } else {
+            // Already on correct path, just clean up the query string
+            l.replace(newPath + l.hash);
+          }
         }
       })();
     </script>
