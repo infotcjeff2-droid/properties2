@@ -14,13 +14,14 @@ export function AuthProvider({ children }) {
         if (savedUser) {
           const parsedUser = JSON.parse(savedUser)
           setUser(parsedUser)
+          setLoading(false) // Set loading to false immediately after setting user
         } else {
           setUser(null)
+          setLoading(false)
         }
       } catch (e) {
         console.error('Error loading user from localStorage:', e)
         setUser(null)
-      } finally {
         setLoading(false)
       }
     }
