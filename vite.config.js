@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import { copyFileSync } from 'fs'
+import { copyFileSync, existsSync, mkdirSync } from 'fs'
 import { join } from 'path'
 
 export default defineConfig({
@@ -9,12 +9,12 @@ export default defineConfig({
     {
       name: 'copy-404',
       closeBundle() {
+        // Copy 404.html
         copyFileSync(
           join(__dirname, 'public', '404.html'),
           join(__dirname, 'dist', '404.html')
         )
         // Copy favicon to dist
-        const { existsSync, mkdirSync } = require('fs')
         const imgDir = join(__dirname, 'dist', 'img')
         if (!existsSync(imgDir)) {
           mkdirSync(imgDir, { recursive: true })
@@ -23,6 +23,14 @@ export default defineConfig({
           join(__dirname, 'src', 'img', 'ZXS website logo.png'),
           join(imgDir, 'ZXS website logo.png')
         )
+        // Also copy from public if exists
+        const publicImgDir = join(__dirname, 'public', 'img')
+        if (existsSync(publicImgDir)) {
+          const publicLogo = join(publicImgDir, 'ZXS website logo.png')
+          if (existsSync(publicLogo)) {
+            copyFileSync(publicLogo, join(imgDir, 'ZXS website logo.png'))
+          }
+        }
       }
     }
   ],
@@ -31,6 +39,11 @@ export default defineConfig({
     port: 3000,
     open: true
   },
-  publicDir: 'public'
+  publicDir: 'public',
+  build: {
+    outDir: 'dist',
+    assetsDir: 'assets',
+    emptyOutDir: true
+  }
 })
 
