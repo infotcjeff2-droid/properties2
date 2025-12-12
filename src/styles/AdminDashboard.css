@@ -1,0 +1,247 @@
+.admin-container {
+  min-height: 100vh;
+  padding: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.admin-header {
+  background: white;
+  padding: 20px 30px;
+  border-radius: 15px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.admin-header h1 {
+  color: #333;
+  font-size: 28px;
+}
+
+.admin-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.nav-button,
+.logout-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.nav-button {
+  background: #667eea;
+  color: white;
+}
+
+.nav-button:hover {
+  background: #5568d3;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+}
+
+.logout-button {
+  background: #e74c3c;
+  color: white;
+}
+
+.logout-button:hover {
+  background: #c0392b;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+}
+
+.admin-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.admin-tabs button {
+  padding: 12px 24px;
+  border: none;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.admin-tabs button:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.admin-tabs button.active {
+  background: white;
+  color: #667eea;
+}
+
+.admin-content {
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.users-section h2,
+.field-group h2 {
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 22px;
+}
+
+.add-user-form,
+.add-field-form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
+.add-user-form input,
+.add-field-form input {
+  flex: 1;
+  min-width: 200px;
+  padding: 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.add-user-form input:focus,
+.add-field-form input:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.add-button {
+  padding: 12px 24px;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.add-button:hover {
+  background: #5568d3;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+}
+
+.users-list,
+.field-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.user-item,
+.field-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+
+.user-item > div {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.user-item strong {
+  color: #333;
+  font-size: 16px;
+}
+
+.user-email {
+  color: #666;
+  font-size: 14px;
+}
+
+.user-role {
+  display: inline-block;
+  padding: 4px 12px;
+  background: #667eea;
+  color: white;
+  border-radius: 12px;
+  font-size: 12px;
+  width: fit-content;
+}
+
+.field-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.field-item span {
+  flex: 1;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.field-item span:hover {
+  background: #e0e0e0;
+}
+
+.field-item input {
+  flex: 1;
+  padding: 8px;
+  border: 2px solid #667eea;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.delete-button {
+  padding: 8px 16px;
+  background: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.delete-button:hover {
+  background: #c0392b;
+  transform: translateY(-2px);
+}
+
+.fields-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+}
+
+@media (max-width: 768px) {
+  .fields-section {
+    grid-template-columns: 1fr;
+  }
+  
+  .admin-header {
+    flex-direction: column;
+    gap: 15px;
+  }
+}
+
