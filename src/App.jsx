@@ -60,7 +60,13 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
-      <Route path="/" element={<Navigate to={user ? "/order" : "/login"} replace />} />
+      <Route 
+        path="/" 
+        element={
+          // Only redirect if we're sure about user state and not already on a valid route
+          user ? <Navigate to="/order" replace /> : <Navigate to="/login" replace />
+        } 
+      />
     </Routes>
   )
 }

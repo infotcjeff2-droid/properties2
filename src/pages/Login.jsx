@@ -9,8 +9,18 @@ function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
-  const { login, directAccess } = useAuth()
+  const { login, directAccess, user } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
+  
+  // If user is already logged in, redirect to order page
+  // But preserve the intended destination if coming from a protected route
+  useEffect(() => {
+    if (user) {
+      const from = location.state?.from?.pathname || '/order'
+      navigate(from, { replace: true })
+    }
+  }, [user, navigate, location])
 
   const handleSubmit = (e) => {
     e.preventDefault()
