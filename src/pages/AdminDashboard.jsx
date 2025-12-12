@@ -186,8 +186,16 @@ function AdminContent() {
                         type="text"
                         value={type}
                         onChange={(e) => updateOrderType(index, e.target.value)}
-                        onBlur={() => setEditingOrderType(null)}
-                        onKeyPress={(e) => e.key === 'Enter' && setEditingOrderType(null)}
+                        onBlur={() => {
+                          setEditingOrderType(null)
+                          window.location.reload()
+                        }}
+                        onKeyPress={(e) => {
+                          if (e.key === 'Enter') {
+                            setEditingOrderType(null)
+                            window.location.reload()
+                          }
+                        }}
                         autoFocus
                       />
                     ) : (
