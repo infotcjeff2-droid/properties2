@@ -103,9 +103,13 @@ function OrderFormContent() {
             .print-section { margin-bottom: 15px; }
             .print-section h2 { font-size: 16px; margin-bottom: 10px; color: #333; border-bottom: 2px solid #667eea; padding-bottom: 5px; }
             .print-field { margin-bottom: 8px; font-size: 13px; line-height: 1.6; }
-            .print-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 15px; }
-            .print-terms { font-size: 10px; line-height: 1.6; color: #555; }
-            .print-terms div { margin-bottom: 6px; }
+            .print-terms { font-size: 10px; line-height: 1.6; color: #555; padding: 15px; background: #f8f9fa; border-radius: 8px; border: 1px solid #e0e0e0; }
+            .print-terms-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+            .print-terms-column-left, .print-terms-column-right { display: flex; flex-direction: column; }
+            .print-terms-item { margin-bottom: 20px; }
+            .print-terms-item:last-child { margin-bottom: 0; }
+            .print-terms-line { margin-bottom: 4px; line-height: 1.6; }
+            .print-terms-line:last-child { margin-bottom: 0; }
             .print-signature-row { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0; }
             .print-signature-col { display: flex; flex-direction: column; }
             .print-signature-label { font-size: 12px; margin-bottom: 10px; color: #666; }
@@ -360,19 +364,40 @@ function OrderFormContent() {
                 <strong>電子郵件:</strong> {formData.email || '無'}
               </div>
             </div>
-            <div className="print-row">
-              <div className="print-section">
-                <h2>條款/注意事項 <span style={{ fontSize: '10px', color: '#e74c3c' }}>*</span></h2>
-                <div className="print-terms">
-                  {getTermsAndConditions().split('\n').map((line, i) => (
-                    <div key={i}>{line}</div>
-                  ))}
-                </div>
+            <div className="print-section">
+              <h2>備註</h2>
+              <div className="print-field">
+                {formData.notes || '無'}
               </div>
-              <div className="print-section">
-                <h2>備註</h2>
-                <div className="print-field">
-                  {formData.notes || '無'}
+            </div>
+            <div className="print-section">
+              <h2>條款/注意事項 <span style={{ fontSize: '10px', color: '#e74c3c' }}>*</span></h2>
+              <div className="print-terms">
+                <div className="print-terms-columns">
+                  <div className="print-terms-column-left">
+                    {getTermsAndConditions()
+                      .split(/\n(?=\d+\.)/)
+                      .slice(0, 2)
+                      .map((term, i) => (
+                        <div key={i} className="print-terms-item">
+                          {term.split('\n').map((line, j) => (
+                            <div key={j} className="print-terms-line">{line}</div>
+                          ))}
+                        </div>
+                      ))}
+                  </div>
+                  <div className="print-terms-column-right">
+                    {getTermsAndConditions()
+                      .split(/\n(?=\d+\.)/)
+                      .slice(2)
+                      .map((term, i) => (
+                        <div key={i + 2} className="print-terms-item">
+                          {term.split('\n').map((line, j) => (
+                            <div key={j} className="print-terms-line">{line}</div>
+                          ))}
+                        </div>
+                      ))}
+                  </div>
                 </div>
               </div>
             </div>
