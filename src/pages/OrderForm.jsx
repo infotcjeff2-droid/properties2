@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useAuth } from '../contexts/AuthContext'
 import { FieldProvider, useFields } from '../contexts/FieldContext'
+import { SignaturePad } from '../components/SignaturePad'
 import '../styles/OrderForm.css'
 import zxsLogo from '../img/ZXS logo.png'
 import zxsWebsiteLogo from '../img/ZXS website logo.png'
@@ -22,8 +23,13 @@ function OrderFormContent() {
     customerName: '',
     phone: '',
     email: '',
-    notes: ''
+    notes: '',
+    signature: null,
+    signatureText: '',
+    signatureDate: ''
   })
+
+  const [signatureMode, setSignatureMode] = useState('draw') // 'draw' or 'text'
 
   const [orderId] = useState(() => {
     return `ORD-${Date.now()}`
@@ -94,6 +100,23 @@ function OrderFormContent() {
     }
     if (companyField) {
       companyField.innerHTML = `<strong>所屬公司:</strong> ${finalCompany}`
+    }
+
+    // Update print content for signature
+    const printSignatureCol = printContent.querySelector('#print-signature-content')
+    const printDateCol = printContent.querySelector('#print-signature-date')
+
+    if (printSignatureCol) {
+      if (signatureMode === 'draw' && formData.signature) {
+        printSignatureCol.innerHTML = `<img src="${formData.signature}" alt="簽名" style="max-width: 200px; max-height: 80px; border-bottom: 1px solid #333; padding-bottom: 10px;" />`
+      } else if (signatureMode === 'text' && formData.signatureText) {
+        printSignatureCol.innerHTML = `<div style="font-family: Cursive, '標楷體', sans-serif; border-bottom: 1px solid #333; padding-bottom: 10px; min-height: 40px; margin-top: 10px;">${formData.signatureText}</div>`
+      } else {
+        printSignatureCol.innerHTML = `<div style="border-top: 0px; border-bottom: 1px solid #333; padding-bottom: 10px; min-height: 40px; margin-top: 10px;"></div>`
+      }
+    }
+    if (printDateCol) {
+      printDateCol.innerHTML = formData.signatureDate || ''
     }
 
     const printWindow = window.open('', '_blank')
@@ -322,14 +345,51 @@ function OrderFormContent() {
 
           <div className="form-group">
             <label htmlFor="signature">簽署位置</label>
+            <div className="signature-toggle">
+              <button
+                type="button"
+                className={`toggle-button ${signatureMode === 'draw' ? 'active' : ''}`}
+                onClick={() => setSignatureMode('draw')}
+              >
+                電子簽署
+              </button>
+              <button
+                type="button"
+                className={`toggle-button ${signatureMode === 'text' ? 'active' : ''}`}
+                onClick={() => setSignatureMode('text')}
+              >
+                文字輸入
+              </button>
+            </div>
             <div className="signature-box">
               <div className="signature-column">
                 <div className="signature-label">簽名：</div>
-                <div className="signature-line"></div>
+                {signatureMode === 'draw' ? (
+                  <SignaturePad
+                    onSave={(signature) => {
+                      setFormData({ ...formData, signature })
+                    }}
+                    initialSignature={formData.signature}
+                  />
+                ) : (
+                  <input
+                    type="text"
+                    className="signature-text-input"
+                    value={formData.signatureText || ''}
+                    onChange={(e) => setFormData({ ...formData, signatureText: e.target.value })}
+                    placeholder="請輸入您的簽名"
+                    style={{ fontFamily: 'Cursive, "標楷體", sans-serif' }}
+                  />
+                )}
               </div>
               <div className="signature-column">
                 <div className="signature-label">日期：</div>
-                <div className="signature-line"></div>
+                <input
+                  type="date"
+                  className="signature-date-input"
+                  value={formData.signatureDate}
+                  onChange={(e) => setFormData({ ...formData, signatureDate: e.target.value })}
+                />
               </div>
             </div>
           </div>
@@ -422,11 +482,11 @@ function OrderFormContent() {
             <div className="print-signature-row">
               <div className="print-signature-col">
                 <div className="print-signature-label">簽名：</div>
-                <div style={{ borderTop: '0px', borderBottom: '1px solid #333', paddingBottom: '10px', minHeight: '40px', marginTop: '10px' }}></div>
+                <div id="print-signature-content" style={{ borderTop: '0px', borderBottom: '1px solid #333', paddingBottom: '10px', minHeight: '40px', marginTop: '10px' }}></div>
               </div>
               <div className="print-signature-col">
                 <div className="print-signature-label">日期：</div>
-                <div style={{ borderTop: '0px', borderBottom: '1px solid #333', paddingBottom: '10px', minHeight: '40px', marginTop: '10px' }}></div>
+                <div id="print-signature-date" style={{ borderTop: '0px', borderBottom: '1px solid #333', paddingBottom: '10px', minHeight: '40px', marginTop: '10px' }}>{formData.signatureDate || ''}</div>
               </div>
             </div>
           </div>

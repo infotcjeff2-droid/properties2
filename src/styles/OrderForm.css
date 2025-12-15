@@ -136,9 +136,25 @@
   color: #e74c3c;
 }
 
+/* Input and textarea fields should NOT have arrow icon */
 .form-group input,
-.form-group select,
 .form-group textarea {
+  padding: 12px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 16px;
+  font-family: inherit;
+  transition: all 0.3s ease;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: none !important;
+  background-repeat: no-repeat;
+  background-position: unset;
+}
+
+/* Only select fields have arrow icon */
+.form-group select {
   padding: 12px 40px 12px 16px;
   border: 2px solid #e0e0e0;
   border-radius: 10px;
@@ -146,6 +162,8 @@
   font-family: inherit;
   transition: all 0.3s ease;
   appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 16px center;
@@ -266,6 +284,65 @@
 
 .signature-label:first-child {
   margin-top:30px;
+}
+
+.signature-toggle {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.toggle-button {
+  padding: 8px 16px;
+  border: 2px solid #667eea;
+  background: white;
+  color: #667eea;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.toggle-button:hover {
+  background: #f0f0f0;
+}
+
+.toggle-button.active {
+  background: #667eea;
+  color: white;
+}
+
+.signature-text-input {
+  padding: 12px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 16px;
+  font-family: inherit;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.signature-text-input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.signature-date-input {
+  padding: 12px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 16px;
+  font-family: inherit;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.signature-date-input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
 .print-button-container {
