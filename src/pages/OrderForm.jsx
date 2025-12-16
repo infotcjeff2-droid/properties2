@@ -26,7 +26,7 @@ function OrderFormContent() {
     notes: '',
     signature: null,
     signatureText: '',
-    signatureDate: ''
+    signatureDate: new Date().toISOString().split('T')[0]
   })
 
   const [signatureMode, setSignatureMode] = useState('draw') // 'draw' or 'text'
