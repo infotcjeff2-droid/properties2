@@ -6,6 +6,29 @@ import AdminDashboard from './pages/AdminDashboard'
 import OrderForm from './pages/OrderForm'
 import ProtectedRoute from './components/ProtectedRoute'
 
+function RootRedirect() {
+  const { user, loading } = useAuth()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (!loading) {
+      const savedUser = localStorage.getItem('user')
+      if (savedUser) {
+        try {
+          JSON.parse(savedUser) // Validate JSON
+          navigate('/order', { replace: true })
+        } catch (e) {
+          navigate('/login', { replace: true })
+        }
+      } else {
+        navigate('/login', { replace: true })
+      }
+    }
+  }, [user, loading, navigate])
+
+  return null
+}
+
 function AppRoutes() {
   const { user, loading } = useAuth()
   const navigate = useNavigate()
@@ -63,8 +86,7 @@ function AppRoutes() {
       <Route 
         path="/" 
         element={
-          // Only redirect if we're sure about user state and not already on a valid route
-          user ? <Navigate to="/order" replace /> : <Navigate to="/login" replace />
+          <RootRedirect />
         } 
       />
     </Routes>

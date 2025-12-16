@@ -13,8 +13,8 @@ function Login() {
   const navigate = useNavigate()
   const location = useLocation()
   
-  // If user is already logged in and came from a protected route, redirect
-  // But allow users to stay on login page if they navigated here directly
+  // Allow users to stay on login page even if logged in
+  // Only redirect if they explicitly came from a protected route
   useEffect(() => {
     // Only redirect if:
     // 1. User is logged in AND
@@ -22,7 +22,11 @@ function Login() {
     // This allows users to manually navigate to /login to re-login or switch accounts
     if (user && location.state?.from) {
       const from = location.state.from.pathname || '/order'
-      navigate(from, { replace: true })
+      // Use setTimeout to prevent immediate redirect
+      const timer = setTimeout(() => {
+        navigate(from, { replace: true })
+      }, 100)
+      return () => clearTimeout(timer)
     }
     // If user navigated directly to /login (no state.from), allow them to stay
     // This enables re-login and account switching
