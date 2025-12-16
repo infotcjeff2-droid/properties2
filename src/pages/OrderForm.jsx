@@ -109,7 +109,7 @@ function OrderFormContent() {
 
     if (printSignatureCol) {
       if (signatureMode === 'draw' && formData.signature) {
-        printSignatureCol.innerHTML = `<img src="${formData.signature}" alt="簽名" style="max-width: 200px; max-height: 80px; border-bottom: 1px solid #333; padding-bottom: 10px; border-top: none; border-left: none; border-right: none;" />`
+        printSignatureCol.innerHTML = `<img src="${formData.signature}" alt="簽名" style="max-width: 200px; max-height: 80px; padding-bottom: 10px; border-top: none; border-left: none; border-right: none;" />`
       } else if (signatureMode === 'text' && formData.signatureText) {
         printSignatureCol.innerHTML = `<div style="font-family: Cursive, '標楷體', sans-serif; border-bottom: 1px solid #333; padding-bottom: 10px; min-height: 40px; margin-top: 10px; border-top: none; border-left: none; border-right: none;">${formData.signatureText}</div>`
       } else {
