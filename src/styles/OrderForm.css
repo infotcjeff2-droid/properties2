@@ -509,6 +509,10 @@
     gap: 15px;
   }
   
+  .order-form-card {
+    padding: 20px;
+  }
+  
   .print-row {
     grid-template-columns: 1fr;
   }
