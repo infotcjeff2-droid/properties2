@@ -50,7 +50,8 @@
 }
 
 .admin-button,
-.logout-button {
+.logout-button,
+.login-button {
   padding: 10px 20px;
   border: none;
   border-radius: 8px;
@@ -80,6 +81,17 @@
   background: #c0392b;
   transform: translateY(-2px);
   box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+}
+
+.login-button {
+  background: #667eea;
+  color: white;
+}
+
+.login-button:hover {
+  background: #5568d3;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
 }
 
 .order-form-card {

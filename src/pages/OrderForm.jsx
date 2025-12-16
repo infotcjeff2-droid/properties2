@@ -167,27 +167,38 @@ function OrderFormContent() {
 
   return (
     <div className="order-form-container">
-      {!directAccess && (
-        <motion.div
-          className="order-form-header"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
-          <div className="header-logo">
-            <img src={zxsLogo} alt="ZXS Logo" className="zxs-logo" />
-          </div>
-          <div className="header-actions">
-            {user?.role === 'admin' && (
-              <button onClick={() => navigate('/admin')} className="admin-button">
-                管理後台
-              </button>
-            )}
-            <button onClick={() => { logout(); navigate('/login') }} className="logout-button">
-              登出
+      <motion.div
+        className="order-form-header"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
+        <div className="header-logo">
+          <img src={zxsLogo} alt="ZXS Logo" className="zxs-logo" />
+        </div>
+        <div className="header-actions">
+          {user?.role === 'admin' && (
+            <button onClick={() => navigate('/admin')} className="admin-button">
+              管理後台
             </button>
-          </div>
-        </motion.div>
-      )}
+          )}
+          {user ? (
+            user?.role === 'admin' && (
+              <button onClick={() => { 
+                logout()
+                setTimeout(() => {
+                  navigate('/login', { replace: true, state: {} })
+                }, 150)
+              }} className="logout-button">
+                登出
+              </button>
+            )
+          ) : (
+            <button onClick={() => navigate('/login', { state: {} })} className="login-button">
+              登入
+            </button>
+          )}
+        </div>
+      </motion.div>
 
       <motion.div
         className="order-form-card"
