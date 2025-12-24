@@ -2,7 +2,7 @@
 
 ## 🌐 線上訪問
 
-訪問地址：https://infotcjeff-ui.github.io/ZXS-order-form/
+訪問地址：https://infotcjeff-ui.github.io/properties-system/
 
 ## 功能特色
 
