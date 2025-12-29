@@ -1,5 +1,3 @@
-import { redirect } from 'next/navigation';
-import { getAuthUser } from '@/lib/auth-utils';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import dynamicImport from 'next/dynamic';
 import PropertyList from '@/components/properties/PropertyList';
@@ -14,8 +12,8 @@ const DataInitializer = dynamicImport(
   { ssr: false }
 );
 
-export default async function PropertiesPage() {
-  // 靜態導出模式下，getAuthUser 將返回 null，認證在客戶端處理
+export default function PropertiesPage() {
+  // 靜態導出模式下，認證在客戶端處理
   const user = null;
 
   return (
