@@ -1,5 +1,3 @@
-import { redirect } from 'next/navigation';
-import { getAuthUser } from '@/lib/auth-utils';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import dynamicImport from 'next/dynamic';
 import ContractDetail from '@/components/contracts/ContractDetail';
@@ -11,23 +9,21 @@ const DataInitializer = dynamicImport(
 );
 
 // 為靜態導出生成參數
-// 返回一個占位符參數，實際路由將在客戶端處理
+// 返回空數組，允許所有動態路由在客戶端處理
 export async function generateStaticParams() {
-  return [{ id: 'placeholder' }];
+  return [];
 }
 
-// 靜態導出模式：generateStaticParams 返回空數組表示所有路由在運行時生成
+// 允許動態參數（在靜態導出模式下）
+export const dynamicParams = true;
 
-export default async function ContractDetailPage({
+export default function ContractDetailPage({
   params,
 }: {
   params: { id: string };
 }) {
-  const user = await getAuthUser();
-
-  if (!user) {
-    redirect('/login');
-  }
+  // 靜態導出模式：認證在客戶端處理
+  const user = null;
 
   return (
     <DashboardLayout>
