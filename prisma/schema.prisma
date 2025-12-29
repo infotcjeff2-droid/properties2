@@ -1,0 +1,200 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Seed script configuration
+// Run with: npm run db:seed
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  SUPER_ADMIN    // 超級管理員，可以創建公司
+  COMPANY_ADMIN  // 公司管理員
+  MANAGER        // 經理
+  STAFF          // 員工
+}
+
+enum CompanyStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+}
+
+enum PropertyStatus {
+  HOLDING      // 持有中
+  SOLD         // 已售
+  LEASE_STOPPED // 已停租
+}
+
+enum AssetCategory {
+  GROUP_ASSETS      // 集團資產
+  COOPERATIVE_INVESTMENT // 合作投資
+  LEASED_OUT        // 向外租用
+  MANAGED_ASSETS    // 代管理資產
+}
+
+model User {
+  id        String    @id @default(cuid())
+  email     String    @unique
+  password  String
+  name      String
+  role      UserRole  @default(STAFF)
+  companyId String?
+  company   Company?  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([companyId])
+  @@index([email])
+}
+
+model Company {
+  id              String         @id @default(cuid())
+  name            String
+  domain          String?        @unique
+  subscriptionPlan String?       // FREE, BASIC, PREMIUM
+  status          CompanyStatus  @default(ACTIVE)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  users           User[]
+  properties      Property[]
+  tenants         Tenant[]
+  contracts       Contract[]
+  maintenanceOrders MaintenanceOrder[]
+  transactions    Transaction[]
+
+  @@index([domain])
+}
+
+model Property {
+  id            String         @id @default(cuid())
+  companyId     String
+  company       Company        @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  propertyNumber String        // 物業編號，如 A01-P001
+  name          String
+  address       String
+  lotNumber     String?        // 地段
+  area          Float?         // 面積
+  landUse       String?        // 土地用途
+  status        PropertyStatus @default(HOLDING)
+  category      AssetCategory  @default(GROUP_ASSETS)
+  images        String[]       // 圖片 URL 數組
+  coordinates   Json?          // { lat, lng }
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  contracts     Contract[]
+  maintenanceOrders MaintenanceOrder[]
+
+  @@index([companyId])
+  @@index([propertyNumber])
+  @@index([status])
+}
+
+model Tenant {
+  id        String    @id @default(cuid())
+  companyId String
+  company   Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  name      String
+  email     String?
+  phone     String?
+  idNumber  String?   // 身份證號
+  status    String    @default("ACTIVE") // ACTIVE, INACTIVE, BLACKLISTED
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  contracts Contract[]
+  maintenanceOrders MaintenanceOrder[]
+
+  @@index([companyId])
+}
+
+model Contract {
+  id          String    @id @default(cuid())
+  companyId   String
+  company     Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  propertyId  String
+  property    Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  tenantId    String
+  tenant      Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  startDate   DateTime
+  endDate     DateTime
+  rentAmount  Float
+  deposit     Float?
+  status      String    @default("ACTIVE") // ACTIVE, EXPIRED, TERMINATED
+  documentUrl String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  transactions Transaction[]
+
+  @@index([companyId])
+  @@index([propertyId])
+  @@index([tenantId])
+  @@index([endDate])
+}
+
+model MaintenanceOrder {
+  id          String    @id @default(cuid())
+  companyId   String
+  company     Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  propertyId  String
+  property    Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  tenantId    String?
+  tenant      Tenant?   @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  title       String
+  description String?
+  priority    String    @default("MEDIUM") // LOW, MEDIUM, HIGH, URGENT
+  status      String    @default("PENDING") // PENDING, IN_PROGRESS, COMPLETED, CANCELLED
+  assignedTo  String?
+  cost        Float?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([companyId])
+  @@index([propertyId])
+  @@index([status])
+}
+
+model Transaction {
+  id            String    @id @default(cuid())
+  companyId     String
+  company       Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  contractId    String?
+  contract      Contract? @relation(fields: [contractId], references: [id], onDelete: SetNull)
+  type          String    // INCOME, EXPENSE
+  amount        Float
+  dueDate       DateTime?
+  paidDate      DateTime?
+  status        String    @default("PENDING") // PENDING, PAID, OVERDUE
+  paymentMethod String?
+  description   String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([companyId])
+  @@index([contractId])
+  @@index([status])
+  @@index([dueDate])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  type      String   // INFO, WARNING, ERROR, SUCCESS
+  title     String
+  content   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([read])
+}
+
