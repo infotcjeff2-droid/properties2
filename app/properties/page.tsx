@@ -6,8 +6,7 @@ import PropertyList from '@/components/properties/PropertyList';
 import Link from 'next/link';
 import { Plus } from 'lucide-react';
 
-// 強制動態渲染，因為需要使用 cookies()
-export const dynamic = 'force-dynamic';
+// 靜態導出模式：認證將在客戶端處理
 
 // 動態導入客戶端組件
 const DataInitializer = dynamicImport(
@@ -16,7 +15,8 @@ const DataInitializer = dynamicImport(
 );
 
 export default async function PropertiesPage() {
-  const user = await getAuthUser();
+  // 靜態導出模式下，getAuthUser 將返回 null，認證在客戶端處理
+  const user = null;
 
   return (
     <DashboardLayout>
